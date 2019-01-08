@@ -25,7 +25,7 @@ class CategoryRoute extends StatefulWidget {
   State<StatefulWidget> createState() => _CategoryRouteState();
 }
 
-class _CategoryRouteState extends State<CategoryRoute> {
+class _CategoryRouteState extends State<StatefulWidget> {
   final categories = <Category>[];
 
   static const _categoryNames = <String>[
