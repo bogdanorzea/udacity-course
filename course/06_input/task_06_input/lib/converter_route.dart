@@ -120,6 +120,7 @@ class _ConverterRouteState extends State<ConverterRoute> {
     // Create the 'input' group of widgets. This is a Column that
     // includes the input value, and 'from' unit [Dropdown].
     Widget inputGroup = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         TextField(
@@ -143,7 +144,6 @@ class _ConverterRouteState extends State<ConverterRoute> {
             value: _inputCurrentUnit,
             items: _unitsDropdownMenuItems,
             style: Theme.of(context).textTheme.headline,
-            isExpanded: true,
             onChanged: (selectedUnit) {
               setState(() {
                 _inputCurrentUnit = selectedUnit;
@@ -169,6 +169,7 @@ class _ConverterRouteState extends State<ConverterRoute> {
     // Create the 'output' group of widgets. This is a Column that
     // includes the output value, and 'to' unit [Dropdown].
     Widget resultGroup = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         TextField(
           controller: _outputTextController,
@@ -186,16 +187,20 @@ class _ConverterRouteState extends State<ConverterRoute> {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
-          child: DropdownButton<Unit>(
-            value: _outputCurrentUnit,
-            items: _unitsDropdownMenuItems,
-            style: Theme.of(context).textTheme.headline,
-            isExpanded: true,
-            onChanged: (selectedUnit) {
-              setState(() {
-                _outputCurrentUnit = selectedUnit;
-              });
-            },
+          child: DropdownButtonHideUnderline(
+            child: ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton<Unit>(
+                value: _outputCurrentUnit,
+                items: _unitsDropdownMenuItems,
+                style: Theme.of(context).textTheme.headline,
+                onChanged: (selectedUnit) {
+                  setState(() {
+                    _outputCurrentUnit = selectedUnit;
+                  });
+                },
+              ),
+            ),
           ),
         ),
       ],
