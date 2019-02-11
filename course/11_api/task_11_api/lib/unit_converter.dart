@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO: Import necessary packages
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'api.dart';
 import 'category.dart';
 import 'unit.dart';
 
@@ -101,12 +99,20 @@ class _UnitConverterState extends State<UnitConverter> {
     return outputNum;
   }
 
-  // TODO: If in the Currency [Category], call the API to retrieve the conversion.
+  // If in the Currency [Category], call the API to retrieve the conversion.
   // Remember, the API call is an async function.
-  void _updateConversion() {
+  void _updateConversion() async {
+    var result;
+    
+    if (widget.category.name == 'Currency') {
+      result = await Api().convert(
+          'currency', _fromValue.name, _toValue.name, _inputValue.toString());
+    } else {
+      result = _inputValue * (_toValue.conversion / _fromValue.conversion);
+    }
+
     setState(() {
-      _convertedValue =
-          _format(_inputValue * (_toValue.conversion / _fromValue.conversion));
+      _convertedValue = _format(result);
     });
   }
 
@@ -172,8 +178,8 @@ class _UnitConverterState extends State<UnitConverter> {
       child: Theme(
         // This sets the color of the [DropdownMenuItem]
         data: Theme.of(context).copyWith(
-              canvasColor: Colors.grey[50],
-            ),
+          canvasColor: Colors.grey[50],
+        ),
         child: DropdownButtonHideUnderline(
           child: ButtonTheme(
             alignedDropdown: true,
