@@ -36,7 +36,7 @@ class _UnitConverterState extends State<UnitConverter> {
   List<DropdownMenuItem> _unitMenuItems;
   bool _showValidationError = false;
   final _inputKey = GlobalKey(debugLabel: 'inputText');
-  // TODO: Add a flag for whether to show error UI
+  bool _showErrorUI = false;
 
   @override
   void initState() {
@@ -109,10 +109,13 @@ class _UnitConverterState extends State<UnitConverter> {
       final api = Api();
       final conversion = await api.convert(apiCategory['route'],
           _inputValue.toString(), _fromValue.name, _toValue.name);
-      // TODO: Check whether to show an error UI
-      setState(() {
-        _convertedValue = _format(conversion);
-      });
+      if (conversion == null) {
+        _showErrorUI = true;
+      } else {
+        setState(() {
+          _convertedValue = _format(conversion);
+        });
+      }
     } else {
       // For the static units, we do the conversion ourselves
       setState(() {
@@ -184,8 +187,8 @@ class _UnitConverterState extends State<UnitConverter> {
       child: Theme(
         // This sets the color of the [DropdownMenuItem]
         data: Theme.of(context).copyWith(
-              canvasColor: Colors.grey[50],
-            ),
+          canvasColor: Colors.grey[50],
+        ),
         child: DropdownButtonHideUnderline(
           child: ButtonTheme(
             alignedDropdown: true,
@@ -203,7 +206,41 @@ class _UnitConverterState extends State<UnitConverter> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Build an error UI
+    if (_showErrorUI) {
+      return Padding(
+        padding: _padding,
+        child: Center(
+          child: Container(
+            padding: _padding,
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 96.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Oh no! We cannot connect right now',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     final input = Padding(
       padding: _padding,
